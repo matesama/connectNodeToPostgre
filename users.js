@@ -1,6 +1,7 @@
 import express from 'express';
 const usersRouter = express.Router();
 import pg from 'pg';
+import {body, validationResult} from 'express-validator';
 
 const {Pool} = pg;
 
@@ -36,7 +37,19 @@ usersRouter.get("/:id", async (req, res) => {
     }
 })
 
-usersRouter.post("/", async (req, res) => {
+//validator with express-validator
+const userValidator = [
+    body('first_name').isString().isLength({min:1}).optional(),
+    body('last_name').isString().isLength({min:1}).optional(),
+    body('age').isNumeric().isLength({min:1}).optional()
+]
+
+usersRouter.post("/", userValidator, async (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(400).json({errors: errors.array()})
+    }
+
     const { first_name, last_name, age } = req.body;
     try {
         const result = await pool.query('INSERT INTO users (first_name, last_name, age) VALUES ($1, $2, $3) RETURNING *;', [first_name, last_name, age]);
@@ -48,7 +61,12 @@ usersRouter.post("/", async (req, res) => {
 
 })
 
-usersRouter.put("/:id", async (req, res) => {
+usersRouter.put("/:id", userValidator, async (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.Status(400).json({errors: errors.array()})
+    }
+
     const id = req.params.id;
     const { first_name, last_name, age } = req.body;
     try {
