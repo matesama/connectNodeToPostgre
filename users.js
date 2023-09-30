@@ -61,11 +61,18 @@ usersRouter.put("/:id", async (req, res) => {
 
 })
 
+usersRouter.delete("/:id", async (req, res) => {
+    const {id} = req.params;
+    
+    try {
+        const result = await pool.query('DELETE FROM users WHERE id=$1 ;', [id]);
+        res.json(result.rows)
 
+    } catch(err){
+        res.status(500).json(err)
+    }
 
-
-
-
+})
 
 
 export default usersRouter;
