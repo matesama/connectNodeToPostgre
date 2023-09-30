@@ -59,6 +59,21 @@ ordersRouter.put("/:id", async (req, res) => {
 
 })
 
+ordersRouter.delete("/:id", async (req, res) => {
+    const {id} = req.params;
+    
+    try {
+        const result = await pool.query('DELETE FROM orders WHERE id=$1;', [id]);
+        res.json(result.rows)
+
+    } catch(err){
+        res.status(500).json(err)
+    }
+
+})
+
+
+
 
 
 
