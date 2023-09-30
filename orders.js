@@ -80,7 +80,8 @@ ordersRouter.delete("/:id", async (req, res) => {
 
 })
 
-ordersRouter.delete("/:user_id", async (req, res) => {//To delete a user that already has orders, first delete orders and then user
+//To delete a user that already has orders, first delete orders and then user
+ordersRouter.delete("/:user_id", async (req, res) => {
     const {user_id} = req.params;
     
     try {

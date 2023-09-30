@@ -1,9 +1,9 @@
-#Creating a Simple RESTapi
+Creating a Simple RESTapi
 
-##Using:
+Using:
 
 1. Node
 2. Express
 3. PostgreSQL 
 
-###User and Order
+User and Order

@@ -4,6 +4,22 @@ const usersRouter = express.Router();
 import {body, validationResult} from 'express-validator';
 
 
+/*app.get("/api/users", async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM users');
+        res.json(result.rows)
+
+    } catch(err){
+        res.status(500).json(err)
+    }
+    
+    /*pool.query('SELECT NOW()')
+    .then(data => res.json(data.rows)) 
+    .catch(err => res.status(500).json(err))
+    
+})
+*/
+
 
 
 usersRouter.get("/", async (req, res) => {
@@ -68,6 +84,43 @@ usersRouter.put("/:id", userValidator, async (req, res) => {
     }
 
 })
+
+//Second version for Put to create new array of values to be able to change the input
+/*usersRouter.put("/:id", async (req, res) => {
+    const {first_name, last_name} = req.body;
+    const {id} = req.params;
+
+    let setClauses = [];
+    let values = [];
+    
+    if (first_name !== undefined) {
+        setClauses.push(`first_name = $${values.length + 1}`);
+        values.push(first_name);
+    }
+    
+    if (last_name !== undefined) {
+        setClauses.push(`last_name = $${values.length + 1}`);
+        values.push(last_name);
+    }
+
+    if (!setClauses.length) {
+        return res.status(400).json({ message: "No fields provided to update" });
+    }
+
+    values.push(id);
+    
+    const query = `UPDATE users SET ${setClauses.join(", ")} WHERE id = $${values.length} RETURNING *`;
+    console.log(query, 'query')
+    try {
+        const {rows} = await pool.query(query, values);
+        if (!rows.length) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.json(rows[0]);
+    } catch(err) {
+        res.status(500).json({ message: "Internal server error", error: err.message });
+    }
+});*/
 
 usersRouter.delete("/:id", async (req, res) => {
     const {id} = req.params;
