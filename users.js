@@ -91,10 +91,31 @@ usersRouter.get("/:id/orders", async (req, res) => {
     try{
         const result = await pool.query('SELECT users.*, orders.* FROM users, orders WHERE users.id = orders.user_id AND users.id=$1;', [id])
         res.json(result.rows)
-    } catch {
+    } catch(err) {
         res.status(404).json(err)
     }
 })
+
+//Set all user inactive that have not ordered yet:
+
+usersRouter.put("/:id/check-inactive", async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const hasOrderedCheck = await pool.query('SELECT COUNT(*) FROM orders WHERE user_id=$1;', [id])
+        console.log(hasOrderedCheck.rows[0].count);
+        
+        if(hasOrderedCheck.rows[0].count > 0) {
+            return res.status(200).json({message: 'User has ordered before'});
+        } else {
+            const result = await pool.query('UPDATE users SET active=$1 WHERE id=$2 RETURNING *;', ["false", id])
+            return res.json(result.rows);
+        }   
+
+    } catch(err) {
+        res.status(500).json(err)
+    }
+}) 
 
 
 export default usersRouter;
