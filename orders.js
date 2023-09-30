@@ -34,6 +34,18 @@ ordersRouter.get("/:id", async (req, res) => {
     }
 })
 
+ordersRouter.post("/", async (req, res) => {
+    const { price, date, user_id } = req.body;
+    try {
+        const result = await pool.query('INSERT INTO orders (price, date, user_id) VALUES ($1, $2, $3) RETURNING *;', [price, date, user_id]);
+        res.json(result.rows)
+
+    } catch(err){
+        res.status(500).json(err)
+    }
+
+})
+
 
 
 
