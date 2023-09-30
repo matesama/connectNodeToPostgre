@@ -72,11 +72,17 @@ ordersRouter.delete("/:id", async (req, res) => {
 
 })
 
+ordersRouter.delete("/:user_id", async (req, res) => {//To delete a user that already has orders, first delete orders and then user
+    const {user_id} = req.params;
+    
+    try {
+        const result = await pool.query('DELETE FROM orders WHERE user_id=$1;', [id]);
+        res.json(result.rows)
 
+    } catch(err){
+        res.status(500).json(err)
+    }
 
-
-
-
-
+})
 
   export default ordersRouter;
