@@ -1,18 +1,8 @@
 import express from 'express';
+import pool from './pool.js';
 const ordersRouter = express.Router();
-import pg from 'pg'
 import {body, validationResult} from 'express-validator';
 
-const {Pool} = pg;
-
-const pool = new Pool({
-    user: process.env.PGUSER,
-    host: process.env.PGHOST,
-    database: process.env.PGDATABASE,
-    password: process.env.PGPASSWORD,
-    port: process.env.PGPORT,
-  })
-  //can also write: const pool = new Pool(), library recognizes .env content
 
   ordersRouter.get("/", async (req, res) => {
     try {
@@ -37,8 +27,8 @@ ordersRouter.get("/:id", async (req, res) => {
 
 //order validation:
 const orderValidator = [
-    body('price').isNumeric().optional(),
-    body('date').isString().optional()
+    body('price').isNumeric().isLength({min: 1}).optional(),
+    body('date').isString().isLength({min: 1}).optional()
 ];
 
 ordersRouter.post("/", orderValidator, async (req, res) => {

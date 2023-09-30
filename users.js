@@ -1,18 +1,8 @@
 import express from 'express';
+import pool from './pool.js';
 const usersRouter = express.Router();
-import pg from 'pg';
 import {body, validationResult} from 'express-validator';
 
-const {Pool} = pg;
-
-const pool = new Pool({
-    user: process.env.PGUSER,
-    host: process.env.PGHOST,
-    database: process.env.PGDATABASE,
-    password: process.env.PGPASSWORD,
-    port: process.env.PGPORT,
-  })
-  //can also write: const pool = new Pool(), library recognizes .env content
 
 
 
@@ -33,7 +23,7 @@ usersRouter.get("/:id", async (req, res) => {
         res.json(result.rows)
 
     } catch(err){
-        res.status(500).json(err)
+        res.status(404).json(err)
     }
 })
 
@@ -74,7 +64,7 @@ usersRouter.put("/:id", userValidator, async (req, res) => {
         res.json(result.rows)
 
     } catch(err){
-        res.status(500).json(err)
+        res.status(404).json(err)
     }
 
 })
@@ -87,9 +77,23 @@ usersRouter.delete("/:id", async (req, res) => {
         res.json(result.rows)
 
     } catch(err){
-        res.status(500).json(err)
+        res.status(404).json(err)
     }
 
+})
+
+
+//Return all orders of a user:
+
+usersRouter.get("/:id/orders", async (req, res) => {
+    const {id} = req.params;
+
+    try{
+        const result = await pool.query('SELECT users.*, orders.* FROM users, orders WHERE users.id = orders.user_id AND users.id=$1;', [id])
+        res.json(result.rows)
+    } catch {
+        res.status(404).json(err)
+    }
 })
 
 
