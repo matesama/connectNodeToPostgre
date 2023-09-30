@@ -46,6 +46,21 @@ ordersRouter.post("/", async (req, res) => {
 
 })
 
+ordersRouter.put("/:id", async (req, res) => {
+    const id = req.params.id;
+    const { price, date, user_id } = req.body;
+    try {
+        const result = await pool.query('UPDATE orders SET price=$1  WHERE id=$2  RETURNING *;', [price, id]);
+        res.json(result.rows)
+
+    } catch(err){
+        res.status(500).json(err)
+    }
+
+})
+
+
+
 
 
 
