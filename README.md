@@ -1,4 +1,4 @@
-Creating a Simple RESTapi
+Creating a Simple RESTful api
 
 Using:
 
@@ -6,4 +6,4 @@ Using:
 2. Express
 3. PostgreSQL 
 
-User and Order
+Database serves client with data about user and their orders
